@@ -1,48 +1,134 @@
 #include "phone_number.h"
 
 #include <sstream>
-#include <stdexcept>
-#include <cctype>
+#include <exception>
 
-bool isNumber(const std::string &number)
+PhoneNumber::PhoneNumber(const std::string &international_number)
 {
-	for (const auto sym : number) {
-		if (!std::isdigit(sym) {
-			return false;
-		}
-	}
-	
-	return true;
-}
+    std::stringstream ss;
+    ss << international_number;
 
-PhoneNumber::PhoneNumber(const std::string &number)
-{
-	std::stringstream ss(number);	
-	if (ss.peek() != '+')
-		throw std::invalid_argument(number);
+    std::invalid_argument error("Wrong number format!");
 
-	ss.ignore(1);
+    char plus = ss.get();
 
-	std::string county_code;
-	std::getline(ss, country_code, '-');
+    if (plus != '+')
+        throw error;
+
+    std::getline(ss, country_code_, '-');
+
+    if (country_code_ == "")
+        throw error;
+
+    std::getline(ss, city_code_, '-');
+
+    if (city_code_ == "")
+        throw error;
+
+    std::getline(ss, local_number_);
+
+    if (local_number_ == "")
+        throw error;
 }
 
 std::string PhoneNumber::GetCountryCode() const
 {
-	return country_code_;
+    return country_code_;
 }
 
 std::string PhoneNumber::GetCityCode() const
 {
-	return city_code_;
+    return city_code_;
 }
 
 std::string PhoneNumber::GetLocalNumber() const
 {
-	return local_number_;
+    return local_number_;
 }
 
 std::string PhoneNumber::GetInternationalNumber() const
 {
-	return '+' + country_code_ + '-' + city_code_ + '-' + local_number_;
+    std::stringstream ss;
+
+    ss << "+";
+    ss << country_code_;
+    ss << "-";
+    ss << city_code_;
+    ss << "-";
+    ss << local_number_;
+
+    return ss.str();
 }
+
+// #include <iostream>
+
+// int main() 
+// {
+//     try {
+//         PhoneNumber pn("+7-495-1112233");
+    
+//         std::cout << pn.GetCountryCode() << ' ' 
+//                   << pn.GetCityCode() << ' ' 
+//                   << pn.GetLocalNumber() << ' ' 
+//                   << pn.GetInternationalNumber() << '\n';
+//     } catch (std::invalid_argument &e) {
+//         std::cout << e.what() << '\n';
+//     }
+
+//     try {
+//         PhoneNumber pn("+323-22-460002");
+    
+//         std::cout << pn.GetCountryCode() << ' ' 
+//                   << pn.GetCityCode() << ' ' 
+//                   << pn.GetLocalNumber() << ' ' 
+//                   << pn.GetInternationalNumber() << '\n';
+//     } catch (std::invalid_argument &e) {
+//         std::cout << e.what() << '\n';
+//     }
+
+//     try {
+//         PhoneNumber pn("+1-2-coursera-cpp");
+    
+//         std::cout << pn.GetCountryCode() << ' ' 
+//                   << pn.GetCityCode() << ' ' 
+//                   << pn.GetLocalNumber() << ' ' 
+//                   << pn.GetInternationalNumber() << '\n';
+//     } catch (std::invalid_argument &e) {
+//         std::cout << e.what() << '\n';
+//     }
+
+//     try {
+//         PhoneNumber pn("1-2-333");
+    
+//         std::cout << pn.GetCountryCode() << ' ' 
+//                   << pn.GetCityCode() << ' ' 
+//                   << pn.GetLocalNumber() << ' ' 
+//                   << pn.GetInternationalNumber() << '\n';
+//     } catch (std::invalid_argument &e) {
+//         std::cout << e.what() << '\n';
+//     }
+
+//     try {
+//         PhoneNumber pn("+7-1233");
+    
+//         std::cout << pn.GetCountryCode() << ' ' 
+//                   << pn.GetCityCode() << ' ' 
+//                   << pn.GetLocalNumber() << ' ' 
+//                   << pn.GetInternationalNumber() << '\n';
+//     } catch (std::invalid_argument &e) {
+//         std::cout << e.what() << '\n';
+//     }
+
+//     try {
+//         PhoneNumber pn("+7---");
+    
+//         std::cout << pn.GetCountryCode() << ' ' 
+//                   << pn.GetCityCode() << ' ' 
+//                   << pn.GetLocalNumber() << ' ' 
+//                   << pn.GetInternationalNumber() << '\n';
+//     } catch (std::invalid_argument &e) {
+//         std::cout << e.what() << '\n';
+//     }
+
+//     return 0;
+// }
